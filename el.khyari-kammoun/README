@@ -1,0 +1,7 @@
+Pour lancer le projet et lancer le test, il faut compiler les sources et executer le Main.
+Le test prend en compte trois peers.
+
+La classe Main correspond au test. Elle instancie les NioEngine, établit les connections et lance les threads nécessaires à l'écoute des messages sur l'entrée standard et au lancement des boucles principales mainloop.
+La classe ChannelImpl correspond à une connexion avec un peer distant et permet d'écrire et de recevoirs des messages.
+La classe NioServer permet d'accepter de nouvelles connections en écoutant sur le port d'écoute.
+La classe Engine gère les différents évènements.
