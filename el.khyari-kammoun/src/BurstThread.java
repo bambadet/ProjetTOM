@@ -3,7 +3,7 @@ import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.Scanner;
 import messages.engine.NioEngine;
-import messages.message.ChatMessage;
+import messages.message.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,7 +22,6 @@ public class BurstThread implements Runnable {
         this.engine = engine;
     }
 
-
     @Override
     @SuppressWarnings("empty-statement")
     public void run() {
@@ -31,9 +30,17 @@ public class BurstThread implements Runnable {
         // générateur d'entier pour choisir le caractère aléatoire
         Random random = new Random(4);
 
-        
-        ChatMessage chat = new ChatMessage(1, "bonjour".getBytes());
-        engine.sendBroadcast(chat);
+        while (true) {
+
+            ChatMessage chat = new ChatMessage(1, "bonjour".getBytes());
+            engine.sendBroadcast(chat);
+
+            // ralentir l'émission du burst thread
+            long start = System.nanoTime();
+            while ((System.nanoTime() - start) < 600000000) {
+            }
+
+        }
     }
 
 }
