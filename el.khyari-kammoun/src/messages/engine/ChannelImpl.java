@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -20,15 +22,17 @@ public class ChannelImpl extends Channel {
     private NioEngine m_engine;
     private DeliverCallback deliver;
     private InetSocketAddress m_isa;
-    private ByteBuffer m_outBuffer;
+    //private ByteBuffer m_outBuffer;
     private SocketChannel sch;
     private SelectionKey m_key;
+    private ArrayList<ByteBuffer> m_outBuffers;
     
     public ChannelImpl(NioEngine engine, SocketChannel sch) throws IOException {
         m_engine = engine;
         m_isa = (InetSocketAddress) sch.getRemoteAddress();
         this.sch = sch;
         m_key = m_engine.register(sch, SelectionKey.OP_READ, this);
+        m_outBuffers = new ArrayList<ByteBuffer>();
     }
     
     /**
@@ -58,13 +62,20 @@ public class ChannelImpl extends Channel {
      */
     @Override
     public void send(byte[] bytes, int offset, int length) {
-        m_outBuffer = ByteBuffer.wrap(bytes, offset, length);
+        ByteBuffer outBuffer = ByteBuffer.wrap(bytes, offset, length);
+        m_outBuffers.add(outBuffer);
+        //m_outBuffer = ByteBuffer.wrap(bytes, offset, length);
         
         m_key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }
     
     public void write() throws IOException {
-        sch.write(m_outBuffer);
+        Iterator<ByteBuffer> it = m_outBuffers.iterator();
+        while (it.hasNext()) {
+            sch.write(it.next());
+            it.remove();
+        }
+        //sch.write(m_outBuffer);
         
         m_key.interestOps(SelectionKey.OP_READ);
     }
