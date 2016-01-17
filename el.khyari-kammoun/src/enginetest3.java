@@ -1,7 +1,5 @@
 
 import java.io.IOException;
-import java.net.InetAddress;
-import messages.engine.ConnectCallbackImpl;
 import messages.engine.NioEngine;
 
 /*
@@ -13,14 +11,16 @@ import messages.engine.NioEngine;
  *
  * @author Fanny
  */
-public class enginetest2 {
+public class enginetest3 {
 
     public static void main(String[] args) throws IOException {
 
-        final NioEngine engine2 = new NioEngine(52002);
-        engine2.connect(InetAddress.getLocalHost(), 52003, new ConnectCallbackImpl());
+        final NioEngine engine3 = new NioEngine(52003);
 
-        engine2.mainloop();
+        engine3.mainloop();
+
 
     }
+
+
 }

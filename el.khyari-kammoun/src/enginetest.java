@@ -1,7 +1,9 @@
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.Scanner;
+import messages.engine.ConnectCallbackImpl;
 import messages.engine.NioEngine;
 
 /*
@@ -18,6 +20,8 @@ public class enginetest {
     public static void main(String[] args) throws IOException {
 
         final NioEngine engine1 = new NioEngine(52001);
+        engine1.connect(InetAddress.getLocalHost(), 52002, new ConnectCallbackImpl());
+        engine1.connect(InetAddress.getLocalHost(), 52003, new ConnectCallbackImpl());
 
         new Thread(new Runnable() {
             @Override
@@ -25,8 +29,9 @@ public class enginetest {
                 engine1.mainloop();
             }
         }).start();
-        
 
+        Thread user = new Thread(new BurstThread(engine1));
+        user.start();
     }
 
 }
